@@ -1,5 +1,4 @@
 using UnityEngine;
-using static UnityEngine.UI.Image;
 
 public class CameraController : MonoBehaviour
 {
@@ -19,6 +18,8 @@ public class CameraController : MonoBehaviour
     private void Start()
     {
         targetZoom = Camera.main.orthographicSize;
+        horizontalBorder = DrawManager.Instance.CanvasWidth * 0.2f / 2;
+        verticalBorder = DrawManager.Instance.CanvasHeight * 0.2f / 2;
     }
 
     private void Update()

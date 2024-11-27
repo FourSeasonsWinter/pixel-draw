@@ -1,11 +1,11 @@
+using System.Collections;
 using UnityEngine;
 
 public class DrawManager : MonoBehaviour
 {
     public Color ActiveColor { get; private set; }
-
-    [SerializeField] int canvasHeight = 8;
-    [SerializeField] int canvasWidth = 8;
+    public int CanvasHeight { get; private set; }
+    public int CanvasWidth { get; private set; }
 
     public GameObject pixelPrefab;
 
@@ -22,20 +22,36 @@ public class DrawManager : MonoBehaviour
             Destroy(gameObject);
         }
 
-        //for (int h = 0; h < canvasHeight; ++h)
-        //{
-        //    for (int w = 0; w < canvasWidth; ++w)
-        //    {
-        //        Instantiate(pixelGameObject, new Vector3(0, 0), pixelGameObject.transform.rotation);
-        //    }
-        //}
-        Instantiate(pixelPrefab, new Vector3(0, 0), pixelPrefab.transform.rotation);
-
         ActiveColor = Color.blue;
+        CanvasHeight = 64;
+        CanvasWidth = 64;
+
+        StartCoroutine(GenerateTheCanvas());
     }
 
     void Update()
     {
         
+    }
+
+    private IEnumerator GenerateTheCanvas()
+    {
+        float xStartOffset = -((CanvasWidth * 0.2f) / 2);
+        float xOffset = xStartOffset;
+        float yOffset = -((CanvasHeight * 0.2f) / 2);
+
+        for (int h = 0; h < CanvasHeight; ++h)
+        {
+            for (int w = 0; w < CanvasWidth; ++w)
+            {
+                Instantiate(pixelPrefab, new Vector3(xOffset, yOffset), Quaternion.identity);
+                xOffset += 0.2f;
+            }
+
+            xOffset = xStartOffset;
+            yOffset += 0.2f;
+        }
+
+        yield return new WaitForSeconds(0.1f);
     }
 }
