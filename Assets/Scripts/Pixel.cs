@@ -9,11 +9,6 @@ public class Pixel : MonoBehaviour
         spriteRenderer = GetComponent<SpriteRenderer>();
     }
 
-    void Update()
-    {
-        
-    }
-
     public Color GetColor()
     {
         return spriteRenderer.color;

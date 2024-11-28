@@ -23,8 +23,8 @@ public class DrawManager : MonoBehaviour
         }
 
         ActiveColor = Color.blue;
-        CanvasHeight = 64;
-        CanvasWidth = 64;
+        CanvasHeight = 8;
+        CanvasWidth = 8;
 
         StartCoroutine(GenerateTheCanvas());
     }
@@ -32,6 +32,11 @@ public class DrawManager : MonoBehaviour
     void Update()
     {
         
+    }
+
+    public void SetActiveColor(Color color)
+    {
+        ActiveColor = color;
     }
 
     private IEnumerator GenerateTheCanvas()
