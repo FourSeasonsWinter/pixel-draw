@@ -36,13 +36,6 @@ public class ColorPicker : MonoBehaviour
 
         hexadecimalField.onValueChanged.AddListener(UpdateColor);
         hexadecimalField.textComponent.color = Color.white;
-
-        UpdateColor(0.0f);
-    }
-
-    public void Hide()
-    {
-        gameObject.SetActive(false);
     }
 
     public void Show()
@@ -50,9 +43,25 @@ public class ColorPicker : MonoBehaviour
         gameObject.SetActive(true);
     }
 
-    private void UpdateColor(float value)
+    public void Hide()
+    {
+        gameObject.SetActive(false);
+    }
+
+    public void SetColorParameters(Color color)
+    {
+        redSlider.value = color.r;
+        greenSlider.value = color.g;
+        blueSlider.value = color.b;
+        alphaSlider.value = color.a;
+
+        UpdateColor(0);
+    }
+
+    private void UpdateColor(float _)
     {
         Color newColor = new(redSlider.value, greenSlider.value, blueSlider.value, alphaSlider.value);
+        PaletteManager.Instance.UpdateActiveColor(newColor);
 
         redText.text = (redSlider.value * 255).ToString("F0");
         greenText.text = (greenSlider.value * 255).ToString("F0");
@@ -69,6 +78,6 @@ public class ColorPicker : MonoBehaviour
 
     private void UpdateColor(string hexValue)
     {
-        Debug.Log("Hex update color");
+        
     }
 }

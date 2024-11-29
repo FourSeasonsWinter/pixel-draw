@@ -21,6 +21,8 @@ public class ColorButton : MonoBehaviour
 
     private void OnClick(Color color)
     {
-        DrawManager.Instance.SetActiveColor(color);
+        SetColor(color);
+        PaletteManager.Instance.SetActiveColorObject(gameObject);
+        PaletteManager.Instance.ShowColorPicker();
     }
 }

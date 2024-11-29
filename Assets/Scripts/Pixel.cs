@@ -23,7 +23,7 @@ public class Pixel : MonoBehaviour
     {
         if (Input.GetMouseButton(0))
         {
-            spriteRenderer.color = DrawManager.Instance.ActiveColor;
+            spriteRenderer.color = PaletteManager.Instance.ActiveColor;
         }
     }
 }

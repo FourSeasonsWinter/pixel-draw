@@ -3,7 +3,6 @@ using UnityEngine;
 
 public class DrawManager : MonoBehaviour
 {
-    public Color ActiveColor { get; private set; }
     public int CanvasHeight { get; private set; }
     public int CanvasWidth { get; private set; }
 
@@ -22,21 +21,10 @@ public class DrawManager : MonoBehaviour
             Destroy(gameObject);
         }
 
-        ActiveColor = Color.blue;
         CanvasHeight = 8;
         CanvasWidth = 8;
 
         StartCoroutine(GenerateTheCanvas());
-    }
-
-    void Update()
-    {
-        
-    }
-
-    public void SetActiveColor(Color color)
-    {
-        ActiveColor = color;
     }
 
     private IEnumerator GenerateTheCanvas()
