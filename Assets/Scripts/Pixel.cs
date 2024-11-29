@@ -1,12 +1,20 @@
 using UnityEngine;
+using UnityEngine.UI;
 
 public class Pixel : MonoBehaviour
 {
     private SpriteRenderer spriteRenderer;
+    private Image colorObjectImage;
 
     void Start()
     {
         spriteRenderer = GetComponent<SpriteRenderer>();
+    }
+
+    void Update()
+    {
+        if (colorObjectImage == null) return;
+        spriteRenderer.color = colorObjectImage.color;
     }
 
     public Color GetColor()
@@ -23,7 +31,7 @@ public class Pixel : MonoBehaviour
     {
         if (Input.GetMouseButton(0))
         {
-            spriteRenderer.color = PaletteManager.Instance.ActiveColor;
+            colorObjectImage = PaletteManager.Instance.ActiveColorObject.GetComponent<Image>();
         }
     }
 }
