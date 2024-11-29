@@ -13,6 +13,7 @@ public class PaletteManager : MonoBehaviour
 
     public GameObject ActiveColorObject { get; private set; }
     public Color ActiveColor { get; private set; }
+    public bool IsColorPickerOpen { get; private set; }
     public static PaletteManager Instance;
 
     void Start()
@@ -63,6 +64,13 @@ public class PaletteManager : MonoBehaviour
     {
         colorPicker.Show();
         colorPicker.SetColorParameters(ActiveColor);
+        IsColorPickerOpen = true;
+    }
+
+    public void HideColorPicker()
+    {
+        colorPicker.Hide();
+        IsColorPickerOpen = false;
     }
 
     private void UpdateColorPaletteCollection()
