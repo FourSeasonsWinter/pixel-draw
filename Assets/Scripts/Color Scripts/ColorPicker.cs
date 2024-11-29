@@ -1,3 +1,4 @@
+using System;
 using TMPro;
 using Unity.VisualScripting;
 using UnityEngine;
@@ -34,7 +35,6 @@ public class ColorPicker : MonoBehaviour
         blueSlider.onValueChanged.AddListener(UpdateColor);
         alphaSlider.onValueChanged.AddListener(UpdateColor);
 
-        hexadecimalField.onValueChanged.AddListener(UpdateColor);
         hexadecimalField.textComponent.color = Color.white;
     }
 
@@ -58,7 +58,19 @@ public class ColorPicker : MonoBehaviour
         UpdateColor(0);
     }
 
-    private void UpdateColor(float _)
+    public void OnHexadecimalEnter()
+    {
+        string hex = hexadecimalField.text;
+        Color color = GetColorFromHex(hex);
+
+        redSlider.value = color.r;
+        greenSlider.value = color.g;
+        blueSlider.value = color.b;
+
+        UpdateColor(0);
+    }
+
+    private void UpdateColor(Single _)
     {
         Color newColor = new(redSlider.value, greenSlider.value, blueSlider.value, alphaSlider.value);
         PaletteManager.Instance.UpdateActiveColor(newColor);
@@ -76,8 +88,27 @@ public class ColorPicker : MonoBehaviour
         }
     }
 
-    private void UpdateColor(string hexValue)
+    private Color GetColorFromHex(string hex)
     {
-        
+        if (hex[0] == '#')
+        {
+            hex = hex[1..];
+        }
+
+        if (hex.Length == 6)
+        {
+            hex = "FF" + hex;
+        }
+        if (hex.Length != 8)
+        {
+            throw new System.ArgumentException("Hex string must be 6 or 8 characters long");
+        }
+
+        byte a = byte.Parse(hex.Substring(0, 2), System.Globalization.NumberStyles.HexNumber);
+        byte r = byte.Parse(hex.Substring(2, 2), System.Globalization.NumberStyles.HexNumber);
+        byte g = byte.Parse(hex.Substring(4, 2), System.Globalization.NumberStyles.HexNumber);
+        byte b = byte.Parse(hex.Substring(6, 2), System.Globalization.NumberStyles.HexNumber);
+
+        return new Color32(r, g, b, a);
     }
 }
