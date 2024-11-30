@@ -5,35 +5,38 @@ public class Pixel : MonoBehaviour
 {
     private SpriteRenderer spriteRendererComponent;
     private Image colorObjectImage;
-    private Color savedColor;
+
+    public Color Color { get; private set; }
+    public GameObject LinkedColorButton { get; private set; }
 
     void Start()
     {
         spriteRendererComponent = GetComponent<SpriteRenderer>();
-        savedColor = PaletteManager.Instance.BackgroundColor;
+        Color = PaletteManager.Instance.BackgroundColor;
     }
 
     void Update()
     {
         if (colorObjectImage == null)
         {
-            spriteRendererComponent.color = savedColor;
+            spriteRendererComponent.color = Color;
             return;
         }
 
         spriteRendererComponent.color = colorObjectImage.color;
-        savedColor = colorObjectImage.color;
+        Color = colorObjectImage.color;
     }
 
     public void SetColor(Image image)
     {
         colorObjectImage = image;
+        LinkedColorButton = image.gameObject;
     }
 
     public void SetColor(Color color)
     {
         colorObjectImage = null;
-        savedColor = color;
+        Color = color;
     }
 
     private void OnMouseOver()

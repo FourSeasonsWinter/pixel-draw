@@ -1,4 +1,3 @@
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -49,8 +48,10 @@ public class PaletteManager : MonoBehaviour
 
     public void SetActiveColorButtonObject(GameObject colorButtonObject)
     {
+        Color color = colorButtonObject.GetComponent<Image>().color;
         ActiveColorButtonObject = colorButtonObject;
-        UpdateActiveColor(colorButtonObject.GetComponent<Image>().color);
+        colorPicker.SetColorParameters(color);
+        UpdateActiveColor(color);
     }
   
     public void UpdateActiveColor(Color color)

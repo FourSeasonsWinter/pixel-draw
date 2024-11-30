@@ -16,7 +16,8 @@ public class DrawManager : MonoBehaviour
     private Tool[] tools =
     {
         new Brush(),
-        new Eraser()
+        new Eraser(),
+        new Selector()
     };
 
     void Start()
@@ -44,14 +45,26 @@ public class DrawManager : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.B))
         {
             SelectedTool = tools[0];
-            toolTextObject.text = "Brush";
+            toolTextObject.text = SelectedTool.Name;
         }
 
         if (Input.GetKeyDown(KeyCode.E))
         {
             SelectedTool = tools[1];
-            toolTextObject.text = "Eraser";
+            toolTextObject.text = SelectedTool.Name;
         }
+
+        if (Input.GetKeyDown(KeyCode.S))
+        {
+            SelectedTool = tools[2];
+            toolTextObject.text = SelectedTool.Name;
+        }
+    }
+
+    public void ChangeSelectedTool(int toolIndex)
+    {
+        SelectedTool = tools[toolIndex];
+        toolTextObject.text = SelectedTool.Name;
     }
 
     private IEnumerator GenerateTheCanvas()
