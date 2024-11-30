@@ -3,44 +3,47 @@ using UnityEngine.UI;
 
 public class Pixel : MonoBehaviour
 {
-    private SpriteRenderer spriteRenderer;
+    private SpriteRenderer spriteRendererComponent;
     private Image colorObjectImage;
-    private Color savedColor = Color.white;
+
+    public Color Color { get; private set; }
+    public GameObject LinkedColorButton { get; private set; }
 
     void Start()
     {
-        spriteRenderer = GetComponent<SpriteRenderer>();
+        spriteRendererComponent = GetComponent<SpriteRenderer>();
+        Color = PaletteManager.Instance.BackgroundColor;
     }
 
     void Update()
     {
         if (colorObjectImage == null)
         {
-            spriteRenderer.color = savedColor;
+            spriteRendererComponent.color = Color;
             return;
         }
 
-        spriteRenderer.color = colorObjectImage.color;
-        savedColor = colorObjectImage.color;
+        spriteRendererComponent.color = colorObjectImage.color;
+        Color = colorObjectImage.color;
     }
 
-    public Color GetColor()
+    public void SetColor(Image image)
     {
-        return savedColor;
+        colorObjectImage = image;
+        LinkedColorButton = image.gameObject;
     }
 
-    public void SetColor(Color newColor)
+    public void SetColor(Color color)
     {
-        spriteRenderer.color = newColor;
+        colorObjectImage = null;
+        Color = color;
     }
 
     private void OnMouseOver()
     {
         if (Input.GetMouseButton(0))
         {
-            if (PaletteManager.Instance.ActiveColorButtonObject == null) return;
-
-            colorObjectImage = PaletteManager.Instance.ActiveColorButtonObject.GetComponent<Image>();
+            DrawManager.Instance.SelectedTool.Use(this);
         }
     }
 }

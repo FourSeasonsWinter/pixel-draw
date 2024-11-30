@@ -1,17 +1,17 @@
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
 public class PaletteManager : MonoBehaviour
 {
-    public GameObject colorButtonPrefab;
-    public GameObject addColorButtonObject;
-    public GameObject paletteObject;
-    public ColorPicker colorPicker;
+    [SerializeField] GameObject colorButtonPrefab;
+    [SerializeField] GameObject addColorButtonObject;
+    [SerializeField] GameObject paletteObject;
+    [SerializeField] ColorPicker colorPicker;
 
     public GameObject ActiveColorButtonObject { get; private set; }
     public Color ActiveColor { get; private set; }
-    public bool IsColorPickerOpen { get; private set; }
+    public Color BackgroundColor { get; set; }
+
     public static PaletteManager Instance;
 
     void Start()
@@ -25,54 +25,38 @@ public class PaletteManager : MonoBehaviour
             Destroy(gameObject);
         }
 
-        SetActiveColorButtonObject(paletteObject.transform.GetChild(paletteObject.transform.childCount - 1).gameObject);
-        colorPicker.Hide();
+        SetActiveColorButtonObject(paletteObject.transform.GetChild(0).gameObject);
+        colorPicker.SetColorParameters(ActiveColor);
     }
 
     public void AddColorToPalette()
     {
-        AddColorToPalette(Color.white);
-    }
-
-    public void AddColorToPalette(Color color)
-    {
         GameObject newColorObject = Instantiate(colorButtonPrefab, paletteObject.transform);
-        newColorObject.GetComponent<Image>().color = color;
+        newColorObject.GetComponent<Image>().color = ActiveColor;
 
         addColorButtonObject.transform.SetAsLastSibling();
 
         SetActiveColorButtonObject(newColorObject);
+        colorPicker.Show();
     }
 
     public void DeleteColorFromPalette(GameObject colorBtnObject)
     {
         ActiveColorButtonObject = null;
         Destroy(colorBtnObject);
-        HideColorPicker();
     }
 
     public void SetActiveColorButtonObject(GameObject colorButtonObject)
     {
+        Color color = colorButtonObject.GetComponent<Image>().color;
         ActiveColorButtonObject = colorButtonObject;
-        UpdateActiveColor(colorButtonObject.GetComponent<Image>().color);
+        colorPicker.SetColorParameters(color);
+        UpdateActiveColor(color);
     }
   
     public void UpdateActiveColor(Color color)
     {
         ActiveColorButtonObject.GetComponent<Image>().color = color;
         ActiveColor = color;
-    }
-
-    public void ShowColorPicker()
-    {
-        colorPicker.Show();
-        colorPicker.SetColorParameters(ActiveColor);
-        IsColorPickerOpen = true;
-    }
-
-    public void HideColorPicker()
-    {
-        colorPicker.Hide();
-        IsColorPickerOpen = false;
     }
 }
