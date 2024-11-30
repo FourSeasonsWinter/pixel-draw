@@ -38,9 +38,9 @@ public class Pixel : MonoBehaviour
     {
         if (Input.GetMouseButton(0))
         {
-            if (PaletteManager.Instance.ActiveColorObject == null) return;
+            if (PaletteManager.Instance.ActiveColorButtonObject == null) return;
 
-            colorObjectImage = PaletteManager.Instance.ActiveColorObject.GetComponent<Image>();
+            colorObjectImage = PaletteManager.Instance.ActiveColorButtonObject.GetComponent<Image>();
         }
     }
 }

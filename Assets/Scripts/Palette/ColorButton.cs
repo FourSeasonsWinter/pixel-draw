@@ -25,7 +25,7 @@ public class ColorButton : MonoBehaviour
         }
     }
 
-    public void SetColor(Color color)
+    private void SetColor(Color color)
     {
         imageComponent.color = color;
     }
@@ -33,7 +33,7 @@ public class ColorButton : MonoBehaviour
     private void OnClick(Color color)
     {
         SetColor(color);
-        PaletteManager.Instance.SetActiveColorObject(gameObject);
+        PaletteManager.Instance.SetActiveColorButtonObject(gameObject);
 
         HandleDoubleClick();
 
