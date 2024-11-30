@@ -5,10 +5,16 @@ public class DrawManager : MonoBehaviour
 {
     public int CanvasHeight { get; private set; }
     public int CanvasWidth { get; private set; }
+    public Tool SelectedTool { get; private set; }
 
     public GameObject pixelPrefab;
 
     public static DrawManager Instance;
+
+    private Tool[] tools =
+    {
+        new Brush()
+    };
 
     void Start()
     {
@@ -23,6 +29,7 @@ public class DrawManager : MonoBehaviour
 
         CanvasHeight = 8;
         CanvasWidth = 8;
+        SelectedTool = tools[0];
 
         StartCoroutine(GenerateTheCanvas());
     }
