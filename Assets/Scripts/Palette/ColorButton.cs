@@ -45,7 +45,7 @@ public class ColorButton : MonoBehaviour
 
     private void HandleDoubleClick()
     {
-        if (PaletteManager.Instance.IsColorPickerOpen)
+        if (PaletteManager.Instance.IsColorPickerOpen == true)
         {
             PaletteManager.Instance.ShowColorPicker();
             return;

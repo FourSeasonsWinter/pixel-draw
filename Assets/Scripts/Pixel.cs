@@ -5,11 +5,12 @@ public class Pixel : MonoBehaviour
 {
     private SpriteRenderer spriteRendererComponent;
     private Image colorObjectImage;
-    private Color savedColor = Color.white;
+    private Color savedColor;
 
     void Start()
     {
         spriteRendererComponent = GetComponent<SpriteRenderer>();
+        savedColor = PaletteManager.Instance.BackgroundColor;
     }
 
     void Update()

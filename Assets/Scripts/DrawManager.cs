@@ -1,4 +1,5 @@
 using System.Collections;
+using TMPro;
 using UnityEngine;
 
 public class DrawManager : MonoBehaviour
@@ -7,13 +8,15 @@ public class DrawManager : MonoBehaviour
     public int CanvasWidth { get; private set; }
     public Tool SelectedTool { get; private set; }
 
-    public GameObject pixelPrefab;
+    [SerializeField] GameObject pixelPrefab;
+    [SerializeField] TMP_Text toolTextObject;
 
     public static DrawManager Instance;
 
     private Tool[] tools =
     {
-        new Brush()
+        new Brush(),
+        new Eraser()
     };
 
     void Start()
@@ -32,6 +35,23 @@ public class DrawManager : MonoBehaviour
         SelectedTool = tools[0];
 
         StartCoroutine(GenerateTheCanvas());
+
+        PaletteManager.Instance.BackgroundColor = Color.white;
+    }
+
+    void Update()
+    {
+        if (Input.GetKeyDown(KeyCode.B))
+        {
+            SelectedTool = tools[0];
+            toolTextObject.text = "Brush";
+        }
+
+        if (Input.GetKeyDown(KeyCode.E))
+        {
+            SelectedTool = tools[1];
+            toolTextObject.text = "Eraser";
+        }
     }
 
     private IEnumerator GenerateTheCanvas()

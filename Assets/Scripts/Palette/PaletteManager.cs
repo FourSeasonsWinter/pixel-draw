@@ -4,14 +4,16 @@ using UnityEngine.UI;
 
 public class PaletteManager : MonoBehaviour
 {
-    public GameObject colorButtonPrefab;
-    public GameObject addColorButtonObject;
-    public GameObject paletteObject;
-    public ColorPicker colorPicker;
+    [SerializeField] GameObject colorButtonPrefab;
+    [SerializeField] GameObject addColorButtonObject;
+    [SerializeField] GameObject paletteObject;
+    [SerializeField] ColorPicker colorPicker;
 
     public GameObject ActiveColorButtonObject { get; private set; }
     public Color ActiveColor { get; private set; }
     public bool IsColorPickerOpen { get; private set; }
+    public Color BackgroundColor { get; set; }
+
     public static PaletteManager Instance;
 
     void Start()
@@ -27,21 +29,19 @@ public class PaletteManager : MonoBehaviour
 
         SetActiveColorButtonObject(paletteObject.transform.GetChild(paletteObject.transform.childCount - 1).gameObject);
         colorPicker.Hide();
+
+        IsColorPickerOpen = false;
     }
 
     public void AddColorToPalette()
     {
-        AddColorToPalette(Color.white);
-    }
-
-    public void AddColorToPalette(Color color)
-    {
         GameObject newColorObject = Instantiate(colorButtonPrefab, paletteObject.transform);
-        newColorObject.GetComponent<Image>().color = color;
+        newColorObject.GetComponent<Image>().color = ActiveColor;
 
         addColorButtonObject.transform.SetAsLastSibling();
 
         SetActiveColorButtonObject(newColorObject);
+        colorPicker.Show();
     }
 
     public void DeleteColorFromPalette(GameObject colorBtnObject)
