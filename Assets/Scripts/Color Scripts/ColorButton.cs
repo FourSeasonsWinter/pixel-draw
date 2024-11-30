@@ -35,6 +35,16 @@ public class ColorButton : MonoBehaviour
         SetColor(color);
         PaletteManager.Instance.SetActiveColorObject(gameObject);
 
+        HandleDoubleClick();
+
+        if (IsToDelete())
+        {
+            PaletteManager.Instance.DeleteColorFromPalette(gameObject);
+        }
+    }
+
+    private void HandleDoubleClick()
+    {
         if (PaletteManager.Instance.IsColorPickerOpen)
         {
             PaletteManager.Instance.ShowColorPicker();
@@ -48,5 +58,15 @@ public class ColorButton : MonoBehaviour
             PaletteManager.Instance.ShowColorPicker();
             doubleClickTime = 0;
         }
+    }
+
+    private bool IsToDelete()
+    {
+        if (Input.GetKey(KeyCode.LeftControl))
+        {
+            return true;
+        }
+
+        return false;
     }
 }

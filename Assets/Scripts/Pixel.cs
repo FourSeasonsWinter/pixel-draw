@@ -5,6 +5,7 @@ public class Pixel : MonoBehaviour
 {
     private SpriteRenderer spriteRenderer;
     private Image colorObjectImage;
+    private Color savedColor = Color.white;
 
     void Start()
     {
@@ -13,13 +14,19 @@ public class Pixel : MonoBehaviour
 
     void Update()
     {
-        if (colorObjectImage == null) return;
+        if (colorObjectImage == null)
+        {
+            spriteRenderer.color = savedColor;
+            return;
+        }
+
         spriteRenderer.color = colorObjectImage.color;
+        savedColor = colorObjectImage.color;
     }
 
     public Color GetColor()
     {
-        return spriteRenderer.color;
+        return savedColor;
     }
 
     public void SetColor(Color newColor)
@@ -31,6 +38,8 @@ public class Pixel : MonoBehaviour
     {
         if (Input.GetMouseButton(0))
         {
+            if (PaletteManager.Instance.ActiveColorObject == null) return;
+
             colorObjectImage = PaletteManager.Instance.ActiveColorObject.GetComponent<Image>();
         }
     }
