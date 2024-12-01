@@ -31,7 +31,7 @@ public class PaletteManager : MonoBehaviour
         Color transparent = Color.white;
         transparent.a = 0;
 
-        BackgroundColor = Color.white;
+        BackgroundColor = transparent;
     }
 
     public void AddColorToPalette()

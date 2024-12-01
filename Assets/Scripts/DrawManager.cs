@@ -10,6 +10,9 @@ public class DrawManager : MonoBehaviour
 
     [SerializeField] GameObject pixelPrefab;
     [SerializeField] TMP_Text toolTextObject;
+    [SerializeField] GameObject moldure;
+
+    private const float pixelSize = 0.2f;
 
     public static DrawManager Instance;
 
@@ -35,7 +38,8 @@ public class DrawManager : MonoBehaviour
         CanvasWidth = 8;
         SelectedTool = tools[0];
 
-        StartCoroutine(GenerateTheCanvas());
+        StartCoroutine(GenerateCanvas());
+        GenerateMoldure();
     }
 
     void Update()
@@ -65,24 +69,37 @@ public class DrawManager : MonoBehaviour
         toolTextObject.text = SelectedTool.Name;
     }
 
-    private IEnumerator GenerateTheCanvas()
+    private IEnumerator GenerateCanvas()
     {
-        float xStartOffset = -((CanvasWidth * 0.2f) / 2);
+        float xStartOffset = -((CanvasWidth * pixelSize) / 2);
         float xOffset = xStartOffset;
-        float yOffset = -((CanvasHeight * 0.2f) / 2);
+        float yOffset = CanvasHeight * pixelSize / 2;
 
         for (int h = 0; h < CanvasHeight; ++h)
         {
             for (int w = 0; w < CanvasWidth; ++w)
             {
                 Instantiate(pixelPrefab, new Vector3(xOffset, yOffset), Quaternion.identity);
-                xOffset += 0.2f;
+                xOffset += pixelSize;
             }
 
             xOffset = xStartOffset;
-            yOffset += 0.2f;
+            yOffset -= pixelSize;
         }
 
         yield return new WaitForSeconds(0.1f);
+    }
+
+    private void GenerateMoldure()
+    {
+        float xStart = -((CanvasWidth * pixelSize) - 1.5f);
+        float yStart = CanvasHeight * pixelSize - 1.5f;
+        float moldureSize = (CanvasWidth * pixelSize) + 0.1f;
+
+        Vector3 targetScale = new(moldureSize, moldureSize);
+        Vector3 targetPosition = new(xStart, yStart);
+
+        moldure.transform.localScale = targetScale;
+        moldure.transform.position = targetPosition;
     }
 }
