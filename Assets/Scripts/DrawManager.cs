@@ -1,4 +1,6 @@
+using System;
 using System.Collections;
+using System.Threading.Tasks;
 using TMPro;
 using UnityEngine;
 
@@ -34,11 +36,11 @@ public class DrawManager : MonoBehaviour
             Destroy(gameObject);
         }
 
-        CanvasHeight = 8;
-        CanvasWidth = 8;
+        CanvasHeight = 16;
+        CanvasWidth = 16;
         SelectedTool = tools[0];
 
-        StartCoroutine(GenerateCanvas());
+        GenerateCanvas();
         GenerateMoldure();
     }
 
@@ -69,7 +71,7 @@ public class DrawManager : MonoBehaviour
         toolTextObject.text = SelectedTool.Name;
     }
 
-    private IEnumerator GenerateCanvas()
+    private async void GenerateCanvas()
     {
         float xStartOffset = -((CanvasWidth * pixelSize) / 2);
         float xOffset = xStartOffset;
@@ -81,25 +83,18 @@ public class DrawManager : MonoBehaviour
             {
                 Instantiate(pixelPrefab, new Vector3(xOffset, yOffset), Quaternion.identity);
                 xOffset += pixelSize;
+                await Task.Delay((int)0.01f);
             }
 
             xOffset = xStartOffset;
             yOffset -= pixelSize;
         }
-
-        yield return new WaitForSeconds(0.1f);
     }
 
     private void GenerateMoldure()
     {
-        float xStart = -((CanvasWidth * pixelSize) - 1.5f);
-        float yStart = CanvasHeight * pixelSize - 1.5f;
-        float moldureSize = (CanvasWidth * pixelSize) + 0.1f;
-
+        float moldureSize = CanvasWidth * pixelSize;
         Vector3 targetScale = new(moldureSize, moldureSize);
-        Vector3 targetPosition = new(xStart, yStart);
-
         moldure.transform.localScale = targetScale;
-        moldure.transform.position = targetPosition;
     }
 }
