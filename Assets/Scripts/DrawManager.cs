@@ -36,34 +36,32 @@ public class DrawManager : MonoBehaviour
         SelectedTool = tools[0];
 
         StartCoroutine(GenerateTheCanvas());
-
-        PaletteManager.Instance.BackgroundColor = Color.white;
     }
 
     void Update()
     {
         if (Input.GetKeyDown(KeyCode.B))
         {
-            SelectedTool = tools[0];
+            SelectedTool = tools[(int)Tools.Brush];
             toolTextObject.text = SelectedTool.Name;
         }
 
         if (Input.GetKeyDown(KeyCode.E))
         {
-            SelectedTool = tools[1];
+            SelectedTool = tools[(int)Tools.Eraser];
             toolTextObject.text = SelectedTool.Name;
         }
 
         if (Input.GetKeyDown(KeyCode.S))
         {
-            SelectedTool = tools[2];
+            SelectedTool = tools[(int)Tools.Selector];
             toolTextObject.text = SelectedTool.Name;
         }
     }
 
-    public void ChangeSelectedTool(int toolIndex)
+    public void ChangeSelectedTool(Tools tool)
     {
-        SelectedTool = tools[toolIndex];
+        SelectedTool = tools[(int)tool];
         toolTextObject.text = SelectedTool.Name;
     }
 

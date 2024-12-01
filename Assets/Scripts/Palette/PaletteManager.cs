@@ -27,6 +27,11 @@ public class PaletteManager : MonoBehaviour
 
         SetActiveColorButtonObject(paletteObject.transform.GetChild(0).gameObject);
         colorPicker.SetColorParameters(ActiveColor);
+
+        Color transparent = Color.white;
+        transparent.a = 0;
+
+        BackgroundColor = Color.white;
     }
 
     public void AddColorToPalette()
