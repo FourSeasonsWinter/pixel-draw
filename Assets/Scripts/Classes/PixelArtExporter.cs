@@ -35,7 +35,7 @@ public static class PixelArtExporter
 
     private static string SavePNG(Texture2D texture, string filename)
     {
-        filename += "png";
+        filename += ".png";
         byte[] bytes = texture.EncodeToPNG();
 
         string directoryPath = Environment.GetFolderPath(Environment.SpecialFolder.MyPictures);
