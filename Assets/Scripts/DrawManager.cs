@@ -15,9 +15,9 @@ public class DrawManager : MonoBehaviour
     [SerializeField] GameObject pixelPrefab;
     [SerializeField] TMP_Text toolTextObject;
     [SerializeField] GameObject moldure;
+    [SerializeField] FileFormat selectedFormat = FileFormat.BMP;
 
     private const float pixelSize = 0.2f;
-    private const string fileExtension = ".png";
     private Color[] savedState;
 
     public static DrawManager Instance;
@@ -99,7 +99,7 @@ public class DrawManager : MonoBehaviour
 
     public void Export()
     {
-        PixelArtExporter.Export(GetPixelsColors(), PixelArtName + fileExtension);
+        PixelArtExporter.Export(GetPixelsColors(), PixelArtName, selectedFormat);
     }
 
     private Pixel[,] GetPixels()
