@@ -1,3 +1,4 @@
+using System.Collections;
 using UnityEngine;
 
 public class CameraController : MonoBehaviour
@@ -15,14 +16,13 @@ public class CameraController : MonoBehaviour
     private Vector3 velocity = Vector3.zero;
     private float targetZoom;
 
-    private void Start()
+    void Start()
     {
         targetZoom = Camera.main.orthographicSize;
-        horizontalBorder = DrawManager.Instance.CanvasWidth * 0.2f / 2;
-        verticalBorder = DrawManager.Instance.CanvasHeight * 0.2f / 2;
+        InvokeRepeating(nameof(TryToSetBounds), 0.5f, 0.5f);
     }
 
-    private void Update()
+    void Update()
     {
         if (Input.GetMouseButtonDown(1))
         {
@@ -55,5 +55,15 @@ public class CameraController : MonoBehaviour
         }
 
         Camera.main.orthographicSize = Mathf.Lerp(Camera.main.orthographicSize, targetZoom, Time.deltaTime * zoomSpeed);
+    }
+
+    private void TryToSetBounds()
+    {
+        if (CanvasManager.Instance != null)
+        {
+            horizontalBorder = CanvasManager.Instance.CanvasWidth * 0.2f / 2;
+            verticalBorder = CanvasManager.Instance.CanvasHeight * 0.2f / 2;
+            CancelInvoke(nameof(TryToSetBounds));
+        }
     }
 }

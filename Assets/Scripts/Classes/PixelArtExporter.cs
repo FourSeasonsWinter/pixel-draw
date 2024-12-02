@@ -3,9 +3,9 @@ using System.IO;
 using System.Drawing;
 using UnityEngine;
 
-public static class PixelArtExporter
+public class PixelArtExporter
 {
-    public static string Export(UnityEngine.Color[,] pixelArt, string filename, FileFormat format)
+    public string Export(UnityEngine.Color[,] pixelArt, string filename, FileFormat format)
     {
         Texture2D texture = GenerateTexture(pixelArt);
 
@@ -15,7 +15,7 @@ public static class PixelArtExporter
         return SaveBMP(texture, filename);
     }
 
-    private static Texture2D GenerateTexture(UnityEngine.Color[,] colors)
+    private Texture2D GenerateTexture(UnityEngine.Color[,] colors)
     {
         int width = colors.GetLength(0);
         int height = colors.GetLength(1);
@@ -33,7 +33,7 @@ public static class PixelArtExporter
         return texture;
     }
 
-    private static string SavePNG(Texture2D texture, string filename)
+    private string SavePNG(Texture2D texture, string filename)
     {
         filename += ".png";
         byte[] bytes = texture.EncodeToPNG();
@@ -46,7 +46,7 @@ public static class PixelArtExporter
         return filepath;
     }
 
-    private static string SaveBMP(Texture2D texture, string filename)
+    private string SaveBMP(Texture2D texture, string filename)
     {
         filename += ".bmp";
 
