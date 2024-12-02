@@ -8,6 +8,7 @@ public class Pixel : MonoBehaviour
 
     public Color Color { get; private set; }
     public GameObject LinkedColorButton { get; private set; }
+    public int Id { get; set; }
 
     void Start()
     {
