@@ -17,11 +17,15 @@ public class CanvasManager : MonoBehaviour
         get { return height; }
         set { height = CheckDimensionValue(value); }
     }
+    public Color[] Grid
+    {
+        get { return GetGridColors(); }
+    }
 
     [SerializeField] GameObject pixelPrefab;
     [SerializeField] GameObject moldure;
+    [SerializeField] float pixelSize = 0.2f;
 
-    private const float pixelSize = 0.2f;
 
     public void Initialize()
     {
@@ -48,7 +52,20 @@ public class CanvasManager : MonoBehaviour
         return colors;
     }
 
-    public Color[] GetGridColors()
+    public void SetGridColors(Color[] colors)
+    {
+        Transform pixelsContainer = GameObject.Find("Pixels").transform;
+        int i = 0;
+
+        foreach (var color in colors)
+        {
+            pixelsContainer.GetChild(i).GetComponent<Pixel>().SetColor(color);
+            i++;
+        }
+
+    }
+
+    private Color[] GetGridColors()
     {
         Color[] colors = new Color[width * height];
         Transform pixelsContainer = GameObject.Find("Pixels").transform;
@@ -59,11 +76,6 @@ public class CanvasManager : MonoBehaviour
         }
 
         return colors;
-    }
-
-    public void SetGridColors(Color[] colors)
-    {
-
     }
 
     private async void GenerateCanvas()

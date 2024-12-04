@@ -45,6 +45,8 @@ public class DrawManager : MonoBehaviour
         canvas.Initialize();
 
         SetCameraBounds();
+
+        Invoke(nameof(LoadCanvas), 0.2f);
     }
 
     void Update()
@@ -81,13 +83,10 @@ public class DrawManager : MonoBehaviour
 
     public void SaveState()
     {
-        state = new PixelArtState(PixelArtName, canvas.Width, canvas.Height, canvas.GetGridColors(), new Color[1]);
+        state = new PixelArtState(PixelArtName, canvas.Width, canvas.Height, canvas.Grid, new Color[1]);
         string json = JsonUtility.ToJson(state);
         string path = Application.persistentDataPath + $"/{PixelArtName}.json";
         File.WriteAllText(path, json);
-
-        Debug.Log($"Json saved to {path}.");
-        Debug.Log($"Json: {json}");
     }
 
     public void LoadState(string pixelArtName)
@@ -99,17 +98,13 @@ public class DrawManager : MonoBehaviour
             string json = File.ReadAllText(path);
             state = JsonUtility.FromJson<PixelArtState>(json);
         }
-        else
-        {
-            Debug.Log("No saved state found.");
-        }
     }
 
     private void LoadCanvas()
     {
         if (state == null) return;
 
-
+        canvas.SetGridColors(state.canvas);
     }
 
     private void SetCameraBounds()
