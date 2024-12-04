@@ -4,52 +4,79 @@ using UnityEngine;
 
 public class CanvasManager : MonoBehaviour
 {
-    public int CanvasHeight { get; private set; }
-    public int CanvasWidth { get; private set; }
+    private int width;
+    private int height;
+
+    public int Width
+    {
+        get { return width; }
+        set { width = CheckDimensionValue(value); }
+    }
+    public int Height
+    {
+        get { return height; }
+        set { height = CheckDimensionValue(value); }
+    }
 
     [SerializeField] GameObject pixelPrefab;
     [SerializeField] GameObject moldure;
 
     private const float pixelSize = 0.2f;
-    private Color[] savedState;
 
-    public static CanvasManager Instance;
-
-    void Start()
+    public void Initialize()
     {
-        if (Instance == null)
-        {
-            Instance = this;
-        }
-        else
-        {
-            Destroy(gameObject);
-        }
-
-        CanvasHeight = 16;
-        CanvasWidth = 16;
-        savedState = new Color[CanvasWidth * CanvasHeight];
-
         GenerateCanvas();
         GenerateMoldure();
     }
 
-    void Update()
+    public Color[,] GetPixelsColors()
     {
-        
+        Color[,] colors = new Color[width, height];
+        Transform pixelsContainer = GameObject.Find("Pixels").transform;
+        int index = 0;
+
+        for (int y = 0; y < height; ++y)
+        {
+            for (int x = 0; x < width; ++x)
+            {
+                Pixel pixel = pixelsContainer.GetChild(index).GetComponent<Pixel>();
+                colors[x, y] = pixel.Color;
+                index++;
+            }
+        }
+
+        return colors;
+    }
+
+    public Color[] GetGridColors()
+    {
+        Color[] colors = new Color[width * height];
+        Transform pixelsContainer = GameObject.Find("Pixels").transform;
+
+        for (int i = 0; i < pixelsContainer.childCount; ++i)
+        {
+            colors[i] = pixelsContainer.GetChild(i).GetComponent<Pixel>().Color;
+        }
+
+        return colors;
+    }
+
+    public void SetGridColors(Color[] colors)
+    {
+
     }
 
     private async void GenerateCanvas()
     {
-        float xStartOffset = -(CanvasWidth * pixelSize / 2);
+        float xStartOffset = -(width * pixelSize / 2);
         float xOffset = xStartOffset;
-        float yOffset = CanvasHeight * pixelSize / 2;
+        float yOffset = height * pixelSize / 2;
         Transform pixelsContainer = GameObject.Find("Pixels").transform;
         int id = 0;
 
-        for (int y = 0; y < CanvasHeight; ++y)
+        for (int y = 0; y < height; ++y)
         {
-            for (int x = 0; x < CanvasWidth; ++x)
+            for (int x = 0; x < width; ++x)
             {
                 GameObject pixel = Instantiate(pixelPrefab, new Vector3(xOffset, yOffset), Quaternion.identity, pixelsContainer);
                 pixel.GetComponent<Pixel>().Id = id;
@@ -66,70 +93,24 @@ public class CanvasManager : MonoBehaviour
 
     private void GenerateMoldure()
     {
-        float moldureSize = CanvasWidth * pixelSize;
+        float moldureSize = width * pixelSize;
         Vector3 targetScale = new(moldureSize, moldureSize);
         moldure.transform.localScale = targetScale;
     }
 
-    public void SaveCanvas()
+    private int CheckDimensionValue(int value)
     {
-        Pixel[,] pixelsColors = GetPixels();
-
-        foreach (var pixel in pixelsColors)
+        if (value < 0)
         {
-            savedState[pixel.Id] = pixel.Color;
+            return 1;
         }
-    }
-
-    public void ReloadCanvas()
-    {
-        Pixel[,] pixels = GetPixels();
-
-        foreach (var pixel in pixels)
+        else if (value > 64)
         {
-            pixel.SetColor(savedState[pixel.Id]);
+            return 64;
         }
-    }
-
-    public Color[,] GetPixelsColors()
-    {
-        Color[,] colors = new Color[CanvasWidth, CanvasHeight];
-        Pixel[,] pixels = GetPixels();
-
-        int x = 0;
-        int y = 0;
-
-        foreach (var pixel in pixels)
+        else
         {
-            colors[x, y] = pixel.Color;
-            x++;
-
-            if (x == CanvasWidth)
-            {
-                x = 0;
-                y++;
-            }
+            return value;
         }
-
-        return colors;
-    }
-
-    private Pixel[,] GetPixels()
-    {
-        Pixel[,] pixels = new Pixel[CanvasWidth, CanvasHeight];
-        Transform pixelsContainer = GameObject.Find("Pixels").transform;
-        int index = 0;
-
-        for (int y = 0; y < CanvasHeight; ++y)
-        {
-            for (int x = 0; x < CanvasWidth; ++x)
-            {
-                Pixel pixel = pixelsContainer.GetChild(index).gameObject.GetComponent<Pixel>();
-                pixels[x, y] = pixel;
-                index++;
-            }
-        }
-
-        return pixels;
     }
 }

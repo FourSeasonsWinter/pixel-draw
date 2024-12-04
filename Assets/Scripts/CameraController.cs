@@ -19,7 +19,6 @@ public class CameraController : MonoBehaviour
     void Start()
     {
         targetZoom = Camera.main.orthographicSize;
-        InvokeRepeating(nameof(TryToSetBounds), 0.5f, 0.5f);
     }
 
     void Update()
@@ -57,13 +56,9 @@ public class CameraController : MonoBehaviour
         Camera.main.orthographicSize = Mathf.Lerp(Camera.main.orthographicSize, targetZoom, Time.deltaTime * zoomSpeed);
     }
 
-    private void TryToSetBounds()
+    public void SetBounds(float horizontal, float vertical)
     {
-        if (CanvasManager.Instance != null)
-        {
-            horizontalBorder = CanvasManager.Instance.CanvasWidth * 0.2f / 2;
-            verticalBorder = CanvasManager.Instance.CanvasHeight * 0.2f / 2;
-            CancelInvoke(nameof(TryToSetBounds));
-        }
+        horizontalBorder = horizontal;
+        verticalBorder = vertical;
     }
 }

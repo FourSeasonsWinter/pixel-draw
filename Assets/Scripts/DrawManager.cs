@@ -1,9 +1,6 @@
-using System;
-using System.Collections;
-using System.Threading.Tasks;
 using TMPro;
 using UnityEngine;
-using UnityEngine.Rendering;
+using System.IO;
 
 public class DrawManager : MonoBehaviour
 {
@@ -12,8 +9,11 @@ public class DrawManager : MonoBehaviour
 
     [SerializeField] TMP_Text toolTextObject;
     [SerializeField] FileFormat selectedFormat = FileFormat.BMP;
+    [SerializeField] CanvasManager canvas;
+    [SerializeField] GameObject cameraRig;
 
-    private PixelArtExporter exporter = new();
+    private readonly PixelArtExporter exporter = new();
+    private PixelArtState state;
 
     public static DrawManager Instance;
 
@@ -37,6 +37,14 @@ public class DrawManager : MonoBehaviour
 
         PixelArtName = "Develop";
         SelectedTool = tools[0];
+
+        LoadState(PixelArtName);
+
+        canvas.Width = 16;
+        canvas.Height = 16;
+        canvas.Initialize();
+
+        SetCameraBounds();
     }
 
     void Update()
@@ -68,6 +76,44 @@ public class DrawManager : MonoBehaviour
 
     public void Export()
     {
-        exporter.Export(CanvasManager.Instance.GetPixelsColors(), PixelArtName, selectedFormat);
+        exporter.Export(canvas.GetPixelsColors(), PixelArtName, selectedFormat);
+    }
+
+    public void SaveState()
+    {
+        state = new PixelArtState(PixelArtName, canvas.Width, canvas.Height, canvas.GetGridColors(), new Color[1]);
+        string json = JsonUtility.ToJson(state);
+        string path = Application.persistentDataPath + $"/{PixelArtName}.json";
+        File.WriteAllText(path, json);
+
+        Debug.Log($"Json saved to {path}.");
+        Debug.Log($"Json: {json}");
+    }
+
+    public void LoadState(string pixelArtName)
+    {
+        string path = Application.persistentDataPath + $"/{pixelArtName}.json";
+
+        if (File.Exists(path))
+        {
+            string json = File.ReadAllText(path);
+            state = JsonUtility.FromJson<PixelArtState>(json);
+        }
+        else
+        {
+            Debug.Log("No saved state found.");
+        }
+    }
+
+    private void LoadCanvas()
+    {
+        if (state == null) return;
+
+
+    }
+
+    private void SetCameraBounds()
+    {
+        cameraRig.GetComponent<CameraController>().SetBounds(canvas.Width * 0.2f / 2, canvas.Height * 0.2f / 2);
     }
 }
