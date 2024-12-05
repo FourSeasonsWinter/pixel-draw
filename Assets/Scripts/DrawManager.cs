@@ -8,7 +8,7 @@ public class DrawManager : MonoBehaviour
     public Tool SelectedTool { get; private set; }
 
     [SerializeField] TMP_Text toolTextObject;
-    [SerializeField] FileFormat selectedFormat = FileFormat.BMP;
+    [SerializeField] FileFormat fileFormat = FileFormat.BMP;
     [SerializeField] CanvasManager canvas;
     [SerializeField] GameObject cameraRig;
 
@@ -78,7 +78,8 @@ public class DrawManager : MonoBehaviour
 
     public void Export()
     {
-        exporter.Export(canvas.GetPixelsColors(), PixelArtName, selectedFormat);
+        state = new PixelArtState(PixelArtName, canvas.Width, canvas.Height, canvas.Grid, new Color[1]);
+        exporter.Export(state, fileFormat);
     }
 
     public void SaveState()

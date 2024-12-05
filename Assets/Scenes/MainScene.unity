@@ -1194,7 +1194,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   toolTextObject: {fileID: 326312903}
-  selectedFormat: 0
+  fileFormat: 1
   canvas: {fileID: 1949177704}
   cameraRig: {fileID: 787059957}
 --- !u!4 &525113681
@@ -2945,7 +2945,7 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 525113680}
         m_TargetAssemblyTypeName: DrawManager, Assembly-CSharp
-        m_MethodName: Save
+        m_MethodName: SaveState
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -4236,6 +4236,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   pixelPrefab: {fileID: 1372182098702023847, guid: b792750848f1b2247a1a4659efb2731f, type: 3}
   moldure: {fileID: 27050991}
+  pixelSize: 0.2
 --- !u!1 &1979016910
 GameObject:
   m_ObjectHideFlags: 0

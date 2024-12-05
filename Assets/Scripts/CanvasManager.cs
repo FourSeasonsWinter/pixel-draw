@@ -33,25 +33,6 @@ public class CanvasManager : MonoBehaviour
         GenerateMoldure();
     }
 
-    public Color[,] GetPixelsColors()
-    {
-        Color[,] colors = new Color[width, height];
-        Transform pixelsContainer = GameObject.Find("Pixels").transform;
-        int index = 0;
-
-        for (int y = 0; y < height; ++y)
-        {
-            for (int x = 0; x < width; ++x)
-            {
-                Pixel pixel = pixelsContainer.GetChild(index).GetComponent<Pixel>();
-                colors[x, y] = pixel.Color;
-                index++;
-            }
-        }
-
-        return colors;
-    }
-
     public void SetGridColors(Color[] colors)
     {
         Transform pixelsContainer = GameObject.Find("Pixels").transform;
@@ -65,7 +46,7 @@ public class CanvasManager : MonoBehaviour
 
     }
 
-    private Color[] GetGridColors()
+    public Color[] GetGridColors()
     {
         Color[] colors = new Color[width * height];
         Transform pixelsContainer = GameObject.Find("Pixels").transform;
