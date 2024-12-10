@@ -1,6 +1,7 @@
 using TMPro;
 using UnityEngine;
 using System.IO;
+using UnityEngine.UI;
 
 public class DrawManager : MonoBehaviour
 {
@@ -47,6 +48,7 @@ public class DrawManager : MonoBehaviour
         SetCameraBounds();
 
         Invoke(nameof(LoadCanvas), 0.2f);
+        Invoke(nameof(LoadPalette), 0.2f);
     }
 
     void Update()
@@ -78,19 +80,34 @@ public class DrawManager : MonoBehaviour
 
     public void Export()
     {
-        state = new PixelArtState(PixelArtName, canvas.Width, canvas.Height, canvas.Grid, new Color[1]);
+        PixelArtState state = new()
+        {
+            name = PixelArtName,
+            width = canvas.Width,
+            height = canvas.Height,
+            canvas = canvas.Grid,
+        };
         exporter.Export(state, fileFormat);
     }
 
     public void SaveState()
     {
-        state = new PixelArtState(PixelArtName, canvas.Width, canvas.Height, canvas.Grid, new Color[1]);
-        string json = JsonUtility.ToJson(state);
         string path = Application.persistentDataPath + $"/{PixelArtName}.json";
+        PixelArtState state = new()
+        {
+            name = PixelArtName,
+            width = canvas.Width,
+            height = canvas.Height,
+            canvas = canvas.Grid,
+            palette = PaletteManager.Instance.GetPalette(),
+            filepath = path
+        };
+        string json = JsonUtility.ToJson(state);
+
         File.WriteAllText(path, json);
     }
 
-    public void LoadState(string pixelArtName)
+    private void LoadState(string pixelArtName)
     {
         string path = Application.persistentDataPath + $"/{pixelArtName}.json";
 
@@ -106,6 +123,20 @@ public class DrawManager : MonoBehaviour
         if (state == null) return;
 
         canvas.SetGridColors(state.canvas);
+    }
+
+    private void LoadPalette()
+    {
+        if (state == null) return;
+        if (state.palette.Length == 0)
+        {
+            PaletteManager.Instance.AddColor(new Color(0, 1, 232 / 255));
+        }
+
+        foreach (var color in state.palette)
+        {
+            PaletteManager.Instance.AddColor(color);
+        }
     }
 
     private void SetCameraBounds()

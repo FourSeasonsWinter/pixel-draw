@@ -36,6 +36,12 @@ public class PaletteManager : MonoBehaviour
         BackgroundColor = transparent;
     }
 
+    public void AddColor(Color color)
+    {
+        activeColor = color;
+        AddColorToPalette();
+    }
+
     public void AddColorToPalette()
     {
         GameObject newColorObject = Instantiate(colorButtonPrefab, paletteContainer.transform);
@@ -44,8 +50,6 @@ public class PaletteManager : MonoBehaviour
         addColorButtonObject.transform.SetAsLastSibling();
 
         SetActiveColorButtonObject(newColorObject);
-        colorPicker.Show();
-
     }
 
     public void DeleteColorFromPalette(GameObject colorBtnObject)
@@ -70,7 +74,7 @@ public class PaletteManager : MonoBehaviour
 
     public Color[] GetPalette()
     {
-        int colorAmount = paletteContainer.transform.childCount;
+        int colorAmount = paletteContainer.transform.childCount - 1;
         Color[] palette = new Color[colorAmount];
 
         for (int i = 0; i < colorAmount; ++i)

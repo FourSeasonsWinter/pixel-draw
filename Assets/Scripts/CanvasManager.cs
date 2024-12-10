@@ -43,7 +43,6 @@ public class CanvasManager : MonoBehaviour
             pixelsContainer.GetChild(i).GetComponent<Pixel>().SetColor(color);
             i++;
         }
-
     }
 
     public Color[] GetGridColors()
