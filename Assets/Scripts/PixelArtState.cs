@@ -8,5 +8,4 @@ public class PixelArtState
     public int height;
     public Color[] canvas;
     public Color[] palette;
-    public string filepath;
 }

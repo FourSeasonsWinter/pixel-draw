@@ -1,7 +1,6 @@
 using TMPro;
 using UnityEngine;
 using System.IO;
-using UnityEngine.UI;
 
 public class DrawManager : MonoBehaviour
 {
@@ -18,7 +17,7 @@ public class DrawManager : MonoBehaviour
 
     public static DrawManager Instance;
 
-    private Tool[] tools =
+    private readonly Tool[] tools =
     {
         new Brush(),
         new Eraser(),
@@ -36,7 +35,7 @@ public class DrawManager : MonoBehaviour
             Destroy(gameObject);
         }
 
-        PixelArtName = "Develop";
+        PixelArtName = "Develop 2";
         SelectedTool = tools[0];
 
         LoadState(PixelArtName);
@@ -99,8 +98,7 @@ public class DrawManager : MonoBehaviour
             width = canvas.Width,
             height = canvas.Height,
             canvas = canvas.Grid,
-            palette = PaletteManager.Instance.GetPalette(),
-            filepath = path
+            palette = PaletteManager.Instance.GetPalette()
         };
         string json = JsonUtility.ToJson(state);
 
