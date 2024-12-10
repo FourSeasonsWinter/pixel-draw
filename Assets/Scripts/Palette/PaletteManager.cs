@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -5,14 +6,15 @@ public class PaletteManager : MonoBehaviour
 {
     [SerializeField] GameObject colorButtonPrefab;
     [SerializeField] GameObject addColorButtonObject;
-    [SerializeField] GameObject paletteObject;
+    [SerializeField] GameObject paletteContainer;
     [SerializeField] ColorPicker colorPicker;
 
     public GameObject ActiveColorButtonObject { get; private set; }
-    public Color ActiveColor { get; private set; }
     public Color BackgroundColor { get; set; }
 
     public static PaletteManager Instance;
+
+    private Color activeColor;
 
     void Start()
     {
@@ -25,8 +27,7 @@ public class PaletteManager : MonoBehaviour
             Destroy(gameObject);
         }
 
-        SetActiveColorButtonObject(paletteObject.transform.GetChild(0).gameObject);
-        colorPicker.SetColorParameters(ActiveColor);
+        SetActiveColorButtonObject(paletteContainer.transform.GetChild(0).gameObject);
 
         Color transparent = Color.white;
         transparent.a = 0;
@@ -34,15 +35,20 @@ public class PaletteManager : MonoBehaviour
         BackgroundColor = transparent;
     }
 
+    public void AddColor(Color color)
+    {
+        activeColor = color;
+        AddColorToPalette();
+    }
+
     public void AddColorToPalette()
     {
-        GameObject newColorObject = Instantiate(colorButtonPrefab, paletteObject.transform);
-        newColorObject.GetComponent<Image>().color = ActiveColor;
+        GameObject newColorObject = Instantiate(colorButtonPrefab, paletteContainer.transform);
+        newColorObject.GetComponent<Image>().color = activeColor;
 
         addColorButtonObject.transform.SetAsLastSibling();
 
         SetActiveColorButtonObject(newColorObject);
-        colorPicker.Show();
     }
 
     public void DeleteColorFromPalette(GameObject colorBtnObject)
@@ -53,8 +59,9 @@ public class PaletteManager : MonoBehaviour
 
     public void SetActiveColorButtonObject(GameObject colorButtonObject)
     {
-        Color color = colorButtonObject.GetComponent<Image>().color;
         ActiveColorButtonObject = colorButtonObject;
+
+        Color color = colorButtonObject.GetComponent<Image>().color;
         colorPicker.SetColorParameters(color);
         UpdateActiveColor(color);
     }
@@ -62,6 +69,19 @@ public class PaletteManager : MonoBehaviour
     public void UpdateActiveColor(Color color)
     {
         ActiveColorButtonObject.GetComponent<Image>().color = color;
-        ActiveColor = color;
+        activeColor = color;
+    }
+
+    public Color[] GetPalette()
+    {
+        int colorAmount = paletteContainer.transform.childCount - 1;
+        Color[] palette = new Color[colorAmount];
+
+        for (int i = 0; i < colorAmount; ++i)
+        {
+            palette[i] = paletteContainer.transform.GetChild(i).GetComponent<Image>().color;
+        }
+
+        return palette;
     }
 }

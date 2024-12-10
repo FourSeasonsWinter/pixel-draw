@@ -1,31 +1,30 @@
 using System;
 using System.IO;
-using System.Drawing;
 using UnityEngine;
 
-public static class PixelArtExporter
+public class PixelArtExporter
 {
-    public static string Export(UnityEngine.Color[,] pixelArt, string filename, FileFormat format)
+    public string Export(PixelArtState pixelArt, FileFormat format)
     {
-        Texture2D texture = GenerateTexture(pixelArt);
+        Texture2D texture = GenerateTexture(pixelArt.canvas, pixelArt.width, pixelArt.height);
 
         if (format == FileFormat.PNG)
-            return SavePNG(texture, filename);
+            return SavePNG(texture, pixelArt.name);
 
-        return SaveBMP(texture, filename);
+        return SaveBMP(texture, pixelArt.name);
     }
 
-    private static Texture2D GenerateTexture(UnityEngine.Color[,] colors)
+    private Texture2D GenerateTexture(Color[] colors, int width, int height)
     {
-        int width = colors.GetLength(0);
-        int height = colors.GetLength(1);
+        int index = 0;
         Texture2D texture = new(width, height, TextureFormat.RGBA32, false);
 
         for (int y = 0; y < height; ++y)
         {
             for (int x = 0; x < width; ++x)
             {
-                texture.SetPixel(x, y, colors[x, y]);
+                texture.SetPixel(x, y, colors[index]);
+                index++;
             }
         }
 
@@ -33,7 +32,7 @@ public static class PixelArtExporter
         return texture;
     }
 
-    private static string SavePNG(Texture2D texture, string filename)
+    private string SavePNG(Texture2D texture, string filename)
     {
         filename += ".png";
         byte[] bytes = texture.EncodeToPNG();
@@ -46,7 +45,7 @@ public static class PixelArtExporter
         return filepath;
     }
 
-    private static string SaveBMP(Texture2D texture, string filename)
+    private string SaveBMP(Texture2D texture, string filename)
     {
         filename += ".bmp";
 

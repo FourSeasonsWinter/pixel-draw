@@ -54,8 +54,6 @@ public class ColorPicker : MonoBehaviour
         greenSlider.value = color.g;
         blueSlider.value = color.b;
         alphaSlider.value = color.a;
-
-        UpdateColor(0);
     }
 
     public void OnHexadecimalEnter()

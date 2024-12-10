@@ -1,28 +1,23 @@
-using System;
-using System.Collections;
-using System.Threading.Tasks;
 using TMPro;
 using UnityEngine;
-using UnityEngine.Rendering;
+using System.IO;
 
 public class DrawManager : MonoBehaviour
 {
     public string PixelArtName { get; private set; }
-    public int CanvasHeight { get; private set; }
-    public int CanvasWidth { get; private set; }
     public Tool SelectedTool { get; private set; }
 
-    [SerializeField] GameObject pixelPrefab;
     [SerializeField] TMP_Text toolTextObject;
-    [SerializeField] GameObject moldure;
-    [SerializeField] FileFormat selectedFormat = FileFormat.BMP;
+    [SerializeField] FileFormat fileFormat = FileFormat.BMP;
+    [SerializeField] CanvasManager canvas;
+    [SerializeField] GameObject cameraRig;
 
-    private const float pixelSize = 0.2f;
-    private Color[] savedState;
+    private readonly PixelArtExporter exporter = new();
+    private PixelArtState state;
 
     public static DrawManager Instance;
 
-    private Tool[] tools =
+    private readonly Tool[] tools =
     {
         new Brush(),
         new Eraser(),
@@ -40,14 +35,19 @@ public class DrawManager : MonoBehaviour
             Destroy(gameObject);
         }
 
-        PixelArtName = "Develop";
-        CanvasHeight = 16;
-        CanvasWidth = 16;
+        PixelArtName = "Develop 2";
         SelectedTool = tools[0];
-        savedState = new Color[CanvasWidth * CanvasHeight];
 
-        GenerateCanvas();
-        GenerateMoldure();
+        LoadState(PixelArtName);
+
+        canvas.Width = 16;
+        canvas.Height = 16;
+        canvas.Initialize();
+
+        SetCameraBounds();
+
+        Invoke(nameof(LoadCanvas), 0.2f);
+        Invoke(nameof(LoadPalette), 0.2f);
     }
 
     void Update()
@@ -77,102 +77,68 @@ public class DrawManager : MonoBehaviour
         toolTextObject.text = SelectedTool.Name;
     }
 
-    public void SaveCanvas()
-    {
-        Pixel[,] pixelsColors = GetPixels();
-
-        foreach (var pixel in pixelsColors)
-        {
-            savedState[pixel.Id] = pixel.Color;
-        }
-    }
-
-    public void ReloadCanvas()
-    {
-        Pixel[,] pixels = GetPixels();
-
-        foreach (var pixel in pixels)
-        {
-            pixel.SetColor(savedState[pixel.Id]);
-        }
-    }
-
     public void Export()
     {
-        PixelArtExporter.Export(GetPixelsColors(), PixelArtName, selectedFormat);
+        PixelArtState state = new()
+        {
+            name = PixelArtName,
+            width = canvas.Width,
+            height = canvas.Height,
+            canvas = canvas.Grid,
+        };
+        exporter.Export(state, fileFormat);
     }
 
-    private Pixel[,] GetPixels()
+    public void SaveState()
     {
-        Pixel[,] pixels = new Pixel[CanvasWidth, CanvasHeight];
-        Transform pixelsContainer = GameObject.Find("Pixels").transform;
-        int index = 0;
-
-        for (int y = 0; y < CanvasHeight; ++y)
+        string path = Application.persistentDataPath + $"/{PixelArtName}.json";
+        PixelArtState state = new()
         {
-            for (int x = 0; x < CanvasWidth; ++x)
-            {
-                Pixel pixel = pixelsContainer.GetChild(index).gameObject.GetComponent<Pixel>();
-                pixels[x, y] = pixel;
-                index++;
-            }
-        }
+            name = PixelArtName,
+            width = canvas.Width,
+            height = canvas.Height,
+            canvas = canvas.Grid,
+            palette = PaletteManager.Instance.GetPalette()
+        };
+        string json = JsonUtility.ToJson(state);
 
-        return pixels;
+        File.WriteAllText(path, json);
     }
 
-    private Color[,] GetPixelsColors()
+    private void LoadState(string pixelArtName)
     {
-        Color[,] colors = new Color[CanvasWidth, CanvasHeight];
-        Pixel[,] pixels = GetPixels();
+        string path = Application.persistentDataPath + $"/{pixelArtName}.json";
 
-        int x = 0;
-        int y = 0;
-
-        foreach (var pixel in pixels)
+        if (File.Exists(path))
         {
-            colors[x, y] = pixel.Color;
-            x++;
-
-            if (x == CanvasWidth)
-            {
-                x = 0;
-                y++;
-            }
-        }
-
-        return colors;
-    }
-
-    private async void GenerateCanvas()
-    {
-        float xStartOffset = -(CanvasWidth * pixelSize / 2);
-        float xOffset = xStartOffset;
-        float yOffset = CanvasHeight * pixelSize / 2;
-        Transform pixelsContainer = GameObject.Find("Pixels").transform;
-        int id = 0;
-
-        for (int y = 0; y < CanvasHeight; ++y)
-        {
-            for (int x = 0; x < CanvasWidth; ++x)
-            {
-                GameObject pixel = Instantiate(pixelPrefab, new Vector3(xOffset, yOffset), Quaternion.identity, pixelsContainer);
-                pixel.GetComponent<Pixel>().Id = id;
-                
-                xOffset += pixelSize;
-                id += 1;
-                await Task.Delay((int)0.01f);
-            }
-
-            xOffset = xStartOffset;
-            yOffset -= pixelSize;
+            string json = File.ReadAllText(path);
+            state = JsonUtility.FromJson<PixelArtState>(json);
         }
     }
 
-    private void GenerateMoldure()
+    private void LoadCanvas()
     {
-        float moldureSize = CanvasWidth * pixelSize;
-        Vector3 targetScale = new(moldureSize, moldureSize);
-        moldure.transform.localScale = targetScale;
+        if (state == null) return;
+
+        canvas.SetGridColors(state.canvas);
+    }
+
+    private void LoadPalette()
+    {
+        if (state == null) return;
+        if (state.palette.Length == 0)
+        {
+            PaletteManager.Instance.AddColor(new Color(0, 1, 232 / 255));
+        }
+
+        foreach (var color in state.palette)
+        {
+            PaletteManager.Instance.AddColor(color);
+        }
+    }
+
+    private void SetCameraBounds()
+    {
+        cameraRig.GetComponent<CameraController>().SetBounds(canvas.Width * 0.2f / 2, canvas.Height * 0.2f / 2);
     }
 }
