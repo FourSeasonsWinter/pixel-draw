@@ -8,7 +8,10 @@ public class Selector : Tool
         if (pixel.LinkedColorButton != null)
         {
             PaletteManager.Instance.SetActiveColorButtonObject(pixel.LinkedColorButton);
-            DrawManager.Instance.ChangeSelectedTool(Tools.Brush);
+        }
+        else
+        {
+            PaletteManager.Instance.UpdateActiveColor(pixel.Color);
         }
     }
 }
