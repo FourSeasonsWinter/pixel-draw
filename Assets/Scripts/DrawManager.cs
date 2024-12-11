@@ -14,6 +14,7 @@ public class DrawManager : MonoBehaviour
 
     private readonly PixelArtExporter exporter = new();
     private PixelArtState state;
+    private readonly ConfigLoader configLoader = new();
 
     public static DrawManager Instance;
 
