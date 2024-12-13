@@ -5,6 +5,22 @@ using UnityEngine.Networking;
 
 public class CloudSaver
 {
+    public IEnumerator GetSaveData(string url, PixelArtState returnData)
+    {
+        UnityWebRequest request = UnityWebRequest.Get(url);
+
+        yield return request.SendWebRequest();
+
+        if (request.result == UnityWebRequest.Result.Success)
+        {
+            Debug.Log("Get successful");
+        }
+        else
+        {
+            Debug.LogError("Get error: " + request.error);
+        }
+    }
+
     public IEnumerator PostSaveData(string url, PixelArtState data)
     {
         string json = JsonUtility.ToJson(data);
@@ -21,7 +37,7 @@ public class CloudSaver
 
         if (request.result == UnityWebRequest.Result.Success)
         {
-            Debug.Log("Post successful.");
+            Debug.Log("Post successful");
         }
         else
         {

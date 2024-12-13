@@ -110,13 +110,7 @@ public class DrawManager : MonoBehaviour
         File.WriteAllText(path, json);
     }
 
-    public void SaveToCloud()
-    {
-        string url = configLoader.ApiUrl;
-        StartCoroutine(cloudSaver.PostSaveData(url, state));
-    }
-
-    private void LoadState(string pixelArtName)
+    public void LoadState(string pixelArtName)
     {
         string path = Application.persistentDataPath + $"/{pixelArtName}.json";
 
@@ -127,10 +121,24 @@ public class DrawManager : MonoBehaviour
         }
     }
 
+    public void SaveToCloud()
+    {
+        string url = configLoader.ApiUrl;
+        StartCoroutine(cloudSaver.PostSaveData(url, state));
+    }
+
+    public void LoadFromCloud()
+    {
+        string url = configLoader.ApiUrl + $"/{PixelArtName}";
+        StartCoroutine(cloudSaver.GetSaveData(url, state));
+
+        LoadCanvas();
+        LoadPalette();
+    }
+
     private void LoadCanvas()
     {
         if (state == null) return;
-
         canvas.SetGridColors(state.canvas);
     }
 
