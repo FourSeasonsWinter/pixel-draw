@@ -18,7 +18,6 @@ public class ConfigLoader
             string json = File.ReadAllText(path);
             Config config = JsonUtility.FromJson<Config>(json);
             ApiUrl = config.apiUrl;
-            Debug.Log("API URL: " + ApiUrl);
         }
         else
         {

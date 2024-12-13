@@ -1,6 +1,9 @@
 using TMPro;
 using UnityEngine;
 using System.IO;
+using System.Text;
+using UnityEngine.Networking;
+using System.Collections;
 
 public class DrawManager : MonoBehaviour
 {
@@ -13,8 +16,9 @@ public class DrawManager : MonoBehaviour
     [SerializeField] GameObject cameraRig;
 
     private readonly PixelArtExporter exporter = new();
-    private PixelArtState state;
     private readonly ConfigLoader configLoader = new();
+    private readonly CloudSaver cloudSaver = new();
+    private PixelArtState state;
 
     public static DrawManager Instance;
 
@@ -104,6 +108,12 @@ public class DrawManager : MonoBehaviour
         string json = JsonUtility.ToJson(state);
 
         File.WriteAllText(path, json);
+    }
+
+    public void SaveToCloud()
+    {
+        string url = configLoader.ApiUrl;
+        StartCoroutine(cloudSaver.PostSaveData(url, state));
     }
 
     private void LoadState(string pixelArtName)
